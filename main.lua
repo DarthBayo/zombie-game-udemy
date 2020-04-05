@@ -50,6 +50,9 @@ function love.update(dt)
             for i,z in ipairs(zombies) do 
                 zombies[i] = nil
             end
+            for i,b in ipairs(bullets) do
+            	bullets[i] =  nil
+            end
         end
     end
 
@@ -57,6 +60,36 @@ function love.update(dt)
         b.x = b.x + math.cos(b.direction) * b.speed * dt
         b.y = b.y + math.sin(b.direction) * b.speed * dt
     end
+
+    for i=#bullets, 1, -1 do
+    	local b = bullets[i]
+    	if b.x < 0 or b.y < 0 or b.x > love.graphics.getWidth() or b.y > love.graphics.getHeight() then
+    		table.remove(bullets, i)
+    	end
+    end
+
+    for i,z in ipairs(zombies) do
+    	for j,b in ipairs(bullets) do
+    		if distanceBetween(z.x, z.y, b.x, b.y) < 20 then
+    			z.dead = true
+    			b.dead = true
+    		end
+    	end
+    end
+
+	for i=#zombies, 1, -1 do
+		local z = zombies[i]
+		if z.dead == true then
+			table.remove(zombies, i)
+		end
+	end
+
+	for i=#bullets, 1, -1 do
+		local b = bullets[i]
+		if b.dead == true then
+			table.remove(bullets, i)
+		end
+	end
 end
 
 -- Only when the press
@@ -66,6 +99,7 @@ function love.keypressed(key, scancode, isrepeat)
     end
 end
 
+-- Only in the mouse/touch press
 function love.mousepressed(x, y, button, istouch)
     if button == 1 then
         spawnBullet()

@@ -14,6 +14,7 @@ function spawnZombie()
     zombie.x = math.random(0, love.graphics.getWidth())
     zombie.y = math.random(0, love.graphics.getHeight())
     zombie.speed = 100
+	zombie.dead = false
 
     table.insert( zombies, zombie )
 end
@@ -25,6 +26,7 @@ function spawnBullet()
     bullet.y = player.y
     bullet.speed = 500
     bullet.direction = player_mouse_angle()
+	bullet.dead = false
 
     table.insert(bullets, bullet)
 end
