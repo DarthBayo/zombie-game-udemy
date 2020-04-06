@@ -1,3 +1,4 @@
+require "spawn"
 require "functions"
 
 -- Loaded in the first exec
@@ -18,6 +19,11 @@ function love.load()
     -- Enemies
     zombies = {}
     bullets = {}
+
+    -- Settings
+    gameState = 2
+    maxTime = 2
+    timer = maxTime
 end
 
 -- Everytime that update
@@ -46,9 +52,10 @@ function love.update(dt)
         z.x = z.x + math.cos(zombie_player_angle(z)) * z.speed * dt
         z.y = z.y + math.sin(zombie_player_angle(z)) * z.speed * dt
 
-        if distanceBetween(z.x, z.y, player.x, player.y) < 35 then
+        if distanceBetween(z.x, z.y, player.x, player.y) < 30 then
             for i,z in ipairs(zombies) do 
                 zombies[i] = nil
+                gameState = 1
             end
             for i,b in ipairs(bullets) do
             	bullets[i] =  nil
@@ -89,7 +96,16 @@ function love.update(dt)
 		if b.dead == true then
 			table.remove(bullets, i)
 		end
-	end
+    end
+    
+    if gameState == 2 then
+        timer = timer - dt
+        if timer <= 0 then
+            spawnZombie()
+            maxTime = maxTime * 0.95
+            timer = maxTime
+        end
+    end
 end
 
 -- Only when the press
